@@ -1,1 +1,0 @@
-${name}, welcome cook. Let's cook
