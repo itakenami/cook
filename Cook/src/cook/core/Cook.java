@@ -47,7 +47,7 @@ public class Cook {
             }
 
             if ("teste".equals(args[0])) {
-                PrintUtil.outn("SAIDA:" + FileUtil.getApplicationPath());
+                PrintUtil.outn("SAIDA:" + System.getProperty("os.arch"));
                 return false;
             }
 
@@ -115,7 +115,7 @@ public class Cook {
             TEMPLATE_DIR = props.getProperty("templates");
 
             PrintUtil.greenFont();
-            PrintUtil.outn(PrintUtil.MSG,"OK");
+            PrintUtil.outn(PrintUtil.MSG,"[OK]");
             PrintUtil.colorReset();
             
         } catch (FileNotFoundException e1) {
@@ -144,7 +144,7 @@ public class Cook {
             Classpath.loadJars(LIB_PATH);
 
             PrintUtil.greenFont();
-            PrintUtil.out(PrintUtil.MSG,"OK");
+            PrintUtil.out(PrintUtil.MSG,"[OK]");
             PrintUtil.colorReset();
             
         }catch (NullPointerException e1){
@@ -171,7 +171,7 @@ public class Cook {
             cook = (IFCook) Class.forName(MAIN_CLASS).newInstance();
             
             PrintUtil.greenFont();
-            PrintUtil.out(PrintUtil.MSG,"OK");
+            PrintUtil.out(PrintUtil.MSG,"[OK]");
             PrintUtil.colorReset();
             
         } catch (ClassNotFoundException e1) {

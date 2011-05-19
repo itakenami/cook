@@ -4,34 +4,26 @@ package cook.core.ui;
 import cook.util.FileUtil;
 import cook.util.PrintUtil;
 import java.io.File;
-import jline.ANSIBuffer;
-import org.fusesource.jansi.AnsiConsole;
 
 
 public class Screen {
+    
+    
+    private static String getVersion(){
+        return "0.0.3";
+    }
     
 
     public static void header() {
         
         System.out.println("~");
-        /*
-        System.out.println("~ __        __   _ _                             ____            _    ");
-        System.out.println("~ \\ \\      / /__| | | ___ ___  _ __ ___   ___   / ___|___   ___ | | __");
-        System.out.println("~  \\ \\ /\\ / / _ \\ | |/ __/ _ \\| '_ ` _ \\ / _ \\ | |   / _ \\ / _ \\| |/ /");
-        System.out.println("~   \\ V  V /  __/ | | (__ (_) | | | | | |  __/ | |___ (_) | (_) |   < ");
-        System.out.println("~    \\_/\\_/ \\___|_|_|\\___\\___/|_| |_| |_|\\___|  \\____\\___/ \\___/|_|\\_\\");
-         */
-        
         System.out.println("~ "+PrintUtil.getYellowFont()+"  ____            _    _                   "+PrintUtil.getColorReset());
         System.out.println("~ "+PrintUtil.getYellowFont()+" / ___|___   ___ | | ___)_ __   __ _       "+PrintUtil.getColorReset());
         System.out.println("~ "+PrintUtil.getYellowFont()+"| |   / _ \\ / _ \\| |/ / | '_ \\ / _` |      "+PrintUtil.getColorReset());
         System.out.println("~ "+PrintUtil.getYellowFont()+"| |___ (_) | (_) |   <| | | | | (_| |_ _ _ "+PrintUtil.getColorReset());
         System.out.println("~ "+PrintUtil.getYellowFont()+" \\____\\___/ \\___/|_|\\_\\_|_| |_|\\__, (_)_)_)"+PrintUtil.getColorReset());
         System.out.println("~ "+PrintUtil.getYellowFont()+"                               |___/"+PrintUtil.getColorReset());
-        
-        
-        //System.out.println("~");
-        System.out.println("~ Cook 0.1, https://github.com/itakenami/cook");
+        System.out.println("~ Cook "+getVersion()+", https://github.com/itakenami/cook");
         System.out.println("~ ");
     }
 

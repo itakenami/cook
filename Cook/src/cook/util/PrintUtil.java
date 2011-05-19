@@ -4,7 +4,9 @@
  */
 package cook.util;
 
+import java.util.Scanner;
 import jline.ANSIBuffer;
+import org.fusesource.jansi.AnsiConsole;
 
 /**
  *
@@ -84,6 +86,32 @@ public class PrintUtil {
 
     public static void out(String out) {
         System.out.print("~ " + out);
+    }
+    
+    public static int inInt(String prompt){
+        disableASCII();
+        out(prompt);
+        int s = (new Scanner(System.in)).nextInt();
+        enableASCII();
+        return s;
+        
+    }
+    
+    public static String inString(String prompt){
+        disableASCII();
+        out(prompt);
+        String s = (new Scanner(System.in)).nextLine();
+        enableASCII();
+        return s;
+        
+    }
+    
+    public static void disableASCII(){
+        AnsiConsole.systemUninstall();
+    }
+    
+    public static void enableASCII(){
+        AnsiConsole.systemInstall();
     }
     
     

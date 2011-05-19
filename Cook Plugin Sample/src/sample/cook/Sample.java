@@ -5,6 +5,7 @@ import cook.core.IFCook;
 import cook.core.ResultProcess;
 import cook.util.FileUtil;
 import cook.util.PrintUtil;
+import java.util.Scanner;
 
 public class Sample implements IFCook {
 
@@ -62,13 +63,13 @@ public class Sample implements IFCook {
         if (FileUtil.fileExist(pwd + "/out")) {
             PATH_OUT = pwd + "/out";
             saida = true;
-            PrintUtil.outn("Generate in " + PATH_OUT);
+            PrintUtil.outn("Plugin generate file in " + PATH_OUT);
         } else {
             //If out dir not created, try create dir
             if (FileUtil.createDir(pwd + "/out")){
                 PATH_OUT = pwd + "/out";
                 saida = true;
-                PrintUtil.outn("Generate in " + PATH_OUT);
+                PrintUtil.outn("Plugin generate file in " + PATH_OUT);
             }else{
                 saida = false;
                 PrintUtil.outn("Don't create a folder for generate.");
@@ -86,8 +87,15 @@ public class Sample implements IFCook {
         ResultProcess out = new ResultProcess();
         
         try {
+            
+            
+            //Prompt last name
+            PrintUtil.outn("");
+            String last_name = PrintUtil.inString("Now info last name: ");
+            PrintUtil.outn("");
+            
             //Add variable for param define in template
-            FreemarkerWrapper.getInstance().addVar("name", param[1]);    
+            FreemarkerWrapper.getInstance().addVar("name", param[1]+" "+last_name);    
             
             //Call parse for template
             String arq = FreemarkerWrapper.getInstance().parseTemplate("test.ftl");
