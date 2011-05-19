@@ -6,7 +6,7 @@ import cook.util.PrintUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
+
 import java.util.Properties;
 
 public class Cook {
@@ -47,7 +47,7 @@ public class Cook {
             }
 
             if ("teste".equals(args[0])) {
-                PrintUtil.out("SAIDA:" + FileUtil.getApplicationPath());
+                PrintUtil.outn("SAIDA:" + FileUtil.getApplicationPath());
                 return false;
             }
 
@@ -60,8 +60,8 @@ public class Cook {
 
             if (!(new File(PATH)).exists()) {
 
-                PrintUtil.out("Plugin does not exist!!! Try a valid plugin.");
-                PrintUtil.out("");
+                PrintUtil.outn("Plugin does not exist!!! Try a valid plugin.");
+                PrintUtil.outn("");
                 Screen.blank();
 
                 return false;
@@ -87,18 +87,20 @@ public class Cook {
         String TEMPLATE_DIR = null;
 
         //Carrega o arquivos de propriedades do plugin
-        PrintUtil.outn("Loading the property file of the plugin " + PLUGIN + ": ");
+        PrintUtil.out("Loading the property file of the plugin " + PLUGIN + ": ");
         try {
             Properties props = new Properties();
             props.load(new FileInputStream(PATH + "/config.properties"));
 
             if (props.getProperty("main") == null) {
-                PrintUtil.oute("\"main\" property not found.");
+                PrintUtil.outn(PrintUtil.ERRO,"\"main\" property not found.");
+                PrintUtil.outn("");
                 return;
             }
 
             if (props.getProperty("templates") == null) {
-                PrintUtil.oute("\"templates\" property not found.");
+                PrintUtil.outn(PrintUtil.ERRO,"\"templates\" property not found.");
+                PrintUtil.outn("");
                 return;
             }
 
@@ -106,17 +108,20 @@ public class Cook {
             MAIN_CLASS = props.getProperty("main");
             TEMPLATE_DIR = props.getProperty("templates");
 
-            PrintUtil.outo("OK");
+            PrintUtil.outn(PrintUtil.MSG,"OK");
+            
         } catch (FileNotFoundException e1) {
-            PrintUtil.oute("Property file not found.");
+            PrintUtil.outn(PrintUtil.ERRO,"Property file not found.");
+            PrintUtil.outn("");
             return;
         } catch (Exception e2) {
-            PrintUtil.oute(e2.getMessage());
+            PrintUtil.outn(PrintUtil.ERRO,e2.getMessage());
+            PrintUtil.outn("");
             return;
 
         }
 
-        PrintUtil.outn("Loading the plugin libraries: ");
+        PrintUtil.out("Loading the plugin libraries: ");
         try {
             //Define o PATH das lib's do plugin que será utilizado
             final String LIB_PATH = PATH + "/lib";
@@ -124,27 +129,31 @@ public class Cook {
             //Carrega as libs do plugin
             Classpath.loadJars(LIB_PATH);
 
-            PrintUtil.outo("OK");
+            PrintUtil.out(PrintUtil.MSG,"OK");
         }catch (NullPointerException e1){
-            PrintUtil.oute("lib folder not found.");
+            PrintUtil.outn(PrintUtil.ERRO,"lib folder not found.");
+            PrintUtil.outn("");
             return;
         } catch (Exception e2) {
-            PrintUtil.oute(e2.getMessage());
+            PrintUtil.outn(PrintUtil.ERRO,e2.getMessage());
+            PrintUtil.outn("");
             return;
         }
 
 
 
         //Cria o objetos do plugin que será utilizado
-        PrintUtil.outn("Instantiating plugin: ");
+        PrintUtil.out("Instantiating plugin: ");
         try {
             cook = (IFCook) Class.forName(MAIN_CLASS).newInstance();
-            PrintUtil.outo("OK");
+            PrintUtil.out(PrintUtil.MSG,"OK");
         } catch (ClassNotFoundException e1) {
-            PrintUtil.oute("Class of plugin not found.");
+            PrintUtil.outn(PrintUtil.ERRO,"Class of plugin not found.");
+            PrintUtil.outn("");
             return;
         } catch (Exception e2) {
-            PrintUtil.oute(e2.getMessage());
+            PrintUtil.outn(PrintUtil.ERRO,e2.getMessage());
+            PrintUtil.outn("");
             return;
         }
 
@@ -154,7 +163,7 @@ public class Cook {
             if (args[1].equals("help")) {
                 Screen.start();
                 cook.printHeader();
-                PrintUtil.out("");
+                PrintUtil.outn("");
                 cook.printHelp();
                 Screen.end();
                 return;
@@ -163,8 +172,8 @@ public class Cook {
             if (args[1].equals("version")) {
                 Screen.start();
                 cook.printHeader();
-                PrintUtil.out("");
-                PrintUtil.out("Version of plugin: " + cook.getVersion());
+                PrintUtil.outn("");
+                PrintUtil.outn("Version of plugin: " + cook.getVersion());
                 Screen.end();
                 return;
             }
@@ -178,16 +187,16 @@ public class Cook {
 
         cook.printHeader();
 
-        PrintUtil.out("");
+        PrintUtil.outn("");
 
         if (!cook.start(args)) {
-            PrintUtil.out("");
-            PrintUtil.out("--- ERRO ----------------------------------------------------------");
-            PrintUtil.out("The plugin is not started correctly.");
-            PrintUtil.out("-------------------------------------------------------------------");
-            PrintUtil.out("");
-            PrintUtil.out("Ho no!!! The plugin did not run correctly. Try again.");
-            PrintUtil.out("");
+            PrintUtil.outn("");
+            PrintUtil.outn("--- ERRO ----------------------------------------------------------");
+            PrintUtil.outn("The plugin is not started correctly.");
+            PrintUtil.outn("-------------------------------------------------------------------");
+            PrintUtil.outn("");
+            PrintUtil.outn("Ho no!!! The plugin did not run correctly. Try again.");
+            PrintUtil.outn("");
             return;
         }
 
@@ -203,31 +212,31 @@ public class Cook {
 
             if (!out.isERROR()) {
 
-                PrintUtil.out("");
-                PrintUtil.out(out.getMESSAGE());
+                PrintUtil.outn("");
+                PrintUtil.outn(out.getMESSAGE());
                 cook.end();
 
             } else {
 
-                PrintUtil.out("");
-                PrintUtil.out("--- ERRO ----------------------------------------------------------");
-                PrintUtil.out("" + out.getMESSAGE());
-                PrintUtil.out("-------------------------------------------------------------------");
-                PrintUtil.out("");
-                PrintUtil.out("Ho no!!! The plugin did not run correctly. Try again.");
-                PrintUtil.out("");
+                PrintUtil.outn("");
+                PrintUtil.outn("--- ERRO ----------------------------------------------------------");
+                PrintUtil.outn("" + out.getMESSAGE());
+                PrintUtil.outn("-------------------------------------------------------------------");
+                PrintUtil.outn("");
+                PrintUtil.outn("Ho no!!! The plugin did not run correctly. Try again.");
+                PrintUtil.outn("");
                 return;
             }
 
         } else {
 
-            PrintUtil.out("");
-            PrintUtil.out("--- ERRO ----------------------------------------------------------");
-            PrintUtil.out("You're in bad directory to run this plugin.");
-            PrintUtil.out("-------------------------------------------------------------------");
-            PrintUtil.out("");
-            PrintUtil.out("Ho no!!! The plugin did not run correctly. Try again.");
-            PrintUtil.out("");
+            PrintUtil.outn("");
+            PrintUtil.outn("--- ERRO ----------------------------------------------------------");
+            PrintUtil.outn("You're in bad directory to run this plugin.");
+            PrintUtil.outn("-------------------------------------------------------------------");
+            PrintUtil.outn("");
+            PrintUtil.outn("Ho no!!! The plugin did not run correctly. Try again.");
+            PrintUtil.outn("");
             return;
         }
 

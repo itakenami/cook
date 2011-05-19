@@ -22,13 +22,13 @@ public class Sample implements IFCook {
     //Print header message of plugin start
     @Override
     public void printHeader() {
-        PrintUtil.out("Sample Plugin. Version "+getVersion());
+        PrintUtil.outn("Sample Plugin. Version "+getVersion());
     }
 
     //Print help invoke
     @Override
     public void printHelp() {
-        PrintUtil.out("Use: cook sample [name]");
+        PrintUtil.outn("Use: cook sample [name]");
     }
 
     //Start cook plugin. Use thi method for valid in param
@@ -37,9 +37,9 @@ public class Sample implements IFCook {
         
         //Valid in param
         if(param.length==1 || param[1].equals("")){
-            PrintUtil.out("Please enter your name");
+            PrintUtil.outn("Please enter your name");
             printHelp(); //show help
-            PrintUtil.out("");
+            PrintUtil.outn("");
             return false;
         }
         
@@ -62,16 +62,16 @@ public class Sample implements IFCook {
         if (FileUtil.fileExist(pwd + "/out")) {
             PATH_OUT = pwd + "/out";
             saida = true;
-            PrintUtil.out("Generate in " + PATH_OUT);
+            PrintUtil.outn("Generate in " + PATH_OUT);
         } else {
             //If out dir not created, try create dir
             if (FileUtil.createDir(pwd + "/out")){
                 PATH_OUT = pwd + "/out";
                 saida = true;
-                PrintUtil.out("Generate in " + PATH_OUT);
+                PrintUtil.outn("Generate in " + PATH_OUT);
             }else{
                 saida = false;
-                PrintUtil.out("Don't create a folder for generate.");
+                PrintUtil.outn("Don't create a folder for generate.");
             }
 
         }
@@ -93,7 +93,7 @@ public class Sample implements IFCook {
             String arq = FreemarkerWrapper.getInstance().parseTemplate("test.ftl");
             
             //Save template out
-            PrintUtil.out("Save file "+PATH_OUT + "/" + param[1] + ".txt");            
+            PrintUtil.outn("Save file "+PATH_OUT + "/" + param[1] + ".txt");            
             FileUtil.saveToPath(PATH_OUT + "/" + param[1] + ".txt", arq);
             
             //Define out of process
@@ -101,8 +101,8 @@ public class Sample implements IFCook {
             
         } catch (Exception ex) {
             
-            PrintUtil.out(""); 
-            PrintUtil.out("Erro generated!!"); 
+            PrintUtil.outn(""); 
+            PrintUtil.outn("Erro generated!!"); 
             //Define out of process exception
             out.setResultProcess(ResultProcess.ERROR, ex.getMessage());
             
@@ -116,8 +116,8 @@ public class Sample implements IFCook {
     //End of file cicle
     @Override
     public void end() {
-        PrintUtil.out("");
-        PrintUtil.out("Open file to see the result.");
+        PrintUtil.outn("");
+        PrintUtil.outn("Open file to see the result.");
     }
 
     
