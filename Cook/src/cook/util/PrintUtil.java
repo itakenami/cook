@@ -4,6 +4,8 @@
  */
 package cook.util;
 
+import jline.ANSIBuffer;
+
 /**
  *
  * @author itakenami
@@ -14,6 +16,38 @@ public class PrintUtil {
     public static int MSG = -1;
     public static int ERRO = 0;
     public static int INFO = 1;
+    
+    public static void colorReset(){
+        System.out.print(getColorReset());
+    }
+    
+    public static void greenFont(){
+        System.out.print(getGreenFont());
+    }
+    
+    public static void redFont(){
+        System.out.print(getRedFont());
+    }
+    
+    public static void yellowFont(){
+        System.out.print(getYellowFont());
+    }
+    
+    public static String getColorReset(){
+        return ANSIBuffer.ANSICodes.attrib(0);
+    }
+    
+    public static String getGreenFont(){
+        return ANSIBuffer.ANSICodes.attrib(32);
+    }
+    
+    public static String getRedFont(){
+        return ANSIBuffer.ANSICodes.attrib(31);
+    }
+    
+    public static String getYellowFont(){
+        return ANSIBuffer.ANSICodes.attrib(33);
+    }
     
     
     public static void outn(int info, String out) {

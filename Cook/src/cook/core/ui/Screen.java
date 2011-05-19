@@ -4,35 +4,50 @@ package cook.core.ui;
 import cook.util.FileUtil;
 import cook.util.PrintUtil;
 import java.io.File;
+import jline.ANSIBuffer;
+import org.fusesource.jansi.AnsiConsole;
 
 
 public class Screen {
+    
 
     public static void header() {
+        
         System.out.println("~");
+        /*
         System.out.println("~ __        __   _ _                             ____            _    ");
         System.out.println("~ \\ \\      / /__| | | ___ ___  _ __ ___   ___   / ___|___   ___ | | __");
         System.out.println("~  \\ \\ /\\ / / _ \\ | |/ __/ _ \\| '_ ` _ \\ / _ \\ | |   / _ \\ / _ \\| |/ /");
         System.out.println("~   \\ V  V /  __/ | | (__ (_) | | | | | |  __/ | |___ (_) | (_) |   < ");
         System.out.println("~    \\_/\\_/ \\___|_|_|\\___\\___/|_| |_| |_|\\___|  \\____\\___/ \\___/|_|\\_\\");
-        System.out.println("~");
+         */
+        
+        System.out.println("~ "+PrintUtil.getYellowFont()+"  ____            _    _                   "+PrintUtil.getColorReset());
+        System.out.println("~ "+PrintUtil.getYellowFont()+" / ___|___   ___ | | ___)_ __   __ _       "+PrintUtil.getColorReset());
+        System.out.println("~ "+PrintUtil.getYellowFont()+"| |   / _ \\ / _ \\| |/ / | '_ \\ / _` |      "+PrintUtil.getColorReset());
+        System.out.println("~ "+PrintUtil.getYellowFont()+"| |___ (_) | (_) |   <| | | | | (_| |_ _ _ "+PrintUtil.getColorReset());
+        System.out.println("~ "+PrintUtil.getYellowFont()+" \\____\\___/ \\___/|_|\\_\\_|_| |_|\\__, (_)_)_)"+PrintUtil.getColorReset());
+        System.out.println("~ "+PrintUtil.getYellowFont()+"                               |___/"+PrintUtil.getColorReset());
+        
+        
+        //System.out.println("~");
         System.out.println("~ Cook 0.1, https://github.com/itakenami/cook");
         System.out.println("~ ");
     }
 
     public static void start() {
         PrintUtil.outn("");
-        PrintUtil.outn("Starting cooking. Wait...");
+        PrintUtil.outn(PrintUtil.getYellowFont()+"Starting cooking. Wait..."+PrintUtil.getColorReset());
         PrintUtil.outn("");
-        PrintUtil.outn("### Started cooking ##################################################");
+        PrintUtil.outn(PrintUtil.getGreenFont()+"### Started cooking ##################################################"+PrintUtil.getColorReset());
         PrintUtil.outn("");
     }
 
     public static void end() {
         PrintUtil.outn("");
-        PrintUtil.outn("### Baking completed successfully ####################################");
+        PrintUtil.outn(PrintUtil.getGreenFont()+"### Baking completed successfully ####################################"+PrintUtil.getColorReset());
         PrintUtil.outn("");
-        PrintUtil.outn("Thank you for use Cook!! Bye, Bye");
+        PrintUtil.outn(PrintUtil.getGreenFont()+"Thank you for use Cook!! Bye, Bye"+PrintUtil.getColorReset());
         PrintUtil.outn("");
     }
 
