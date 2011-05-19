@@ -1,1 +1,5 @@
-Configure a variável COOK_HOME e coloque o projeto no PATH
+Configure COOK_HOME and put the variable in PATH.
+
+Ex: 
+	export COOK_HOME=/User/itakenami/cook
+	export PATH=$PATH:$COOK_HOME
