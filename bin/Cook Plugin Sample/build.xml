@@ -7,8 +7,8 @@
 <!-- the Compile on Save feature is turned off for the project. -->
 <!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
 <!-- in the project's Project Properties dialog box.-->
-<project name="Cook" default="default" basedir=".">
-    <description>Builds, tests, and runs the project Cook.</description>
+<project name="Cook_Plugin_Sample" default="default" basedir=".">
+    <description>Builds, tests, and runs the project Cook Plugin Sample.</description>
     <import file="nbproject/build-impl.xml"/>
     <!--
 
@@ -59,7 +59,7 @@
 
     An example of overriding the target for project execution could look like this:
 
-        <target name="run" depends="Cook-impl.jar">
+        <target name="run" depends="Cook_Plugin_Sample-impl.jar">
             <exec dir="bin" executable="launcher.exe">
                 <arg file="${dist.jar}"/>
             </exec>
@@ -71,29 +71,13 @@
     nbproject/build-impl.xml file. 
 
     -->
-    
     <target name="-post-jar">
-        
-        <copy todir="../Cook Plugin Sample/lib" file="${dist.jar}" overwrite="true"/>
-        
-        <copy todir="${dist.jar.dir}">
-            <fileset dir="resource"></fileset>
+        <mkdir dir="../plugins/sample"/>
+        <copy todir="../plugins/sample">  
+            <fileset dir="resource"></fileset>  
         </copy>
-        
-        <mkdir dir="${dist.jar.dir}/plugins"/>
-        <copy todir="${dist.jar.dir}/plugins">  
-            <fileset dir="plugins"></fileset>  
-        </copy>
-        <copy todir="${dist.jar.dir}/Cook Plugin Sample">  
-            <fileset dir="../Cook Plugin Sample"></fileset>  
-        </copy>
-        <copy tofile="${dist.jar.dir}/Cook Plugin Sample/build.xml" file="../Cook Plugin Sample/build-deployed.xml" overwrite="true" />
-        <delete file="${dist.jar.dir}/Cook Plugin Sample/build-deployed.xml"/>
-        
-        
-        <copy todir="../bin">  
-            <fileset dir="${dist.jar.dir}"></fileset>  
-        </copy>
-        
+        <mkdir dir="../plugins/sample/lib"/>
+        <copy todir="../plugins/sample/lib" file="${dist.jar}"/>  
     </target>
+    
 </project>
