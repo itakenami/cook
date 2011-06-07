@@ -173,10 +173,6 @@ public class FileUtil
 
     public static Boolean download(String stringUrl, String pathLocal) throws FileNotFoundException, IOException
     {
-        PrintUtil.outn("");
-        PrintUtil.outn("Starting download...");
-        PrintUtil.outn("");
-      
         int flag = 0;
         InputStream stream = null;
         try {
@@ -186,16 +182,19 @@ public class FileUtil
             String arquivo = url.getFile();
             String nomeArquivoLocal = arquivo.substring(arquivo.lastIndexOf('/') + 1);
 
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            size = connection.getContentLength();
+            stream = connection.getInputStream();
+            file = new RandomAccessFile(new File(pathLocal + nomeArquivoLocal), "rw");
+
+            PrintUtil.outn("");
+            PrintUtil.outn("Starting download...");
+            PrintUtil.outn("");
             PrintUtil.outn("File: "+nomeArquivoLocal);
             PrintUtil.outn("");
             System.out.print("~ [");
             System.out.print(ANSIBuffer.ANSICodes.right(50));
             System.out.println("]");
-
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            size = connection.getContentLength();
-            stream = connection.getInputStream();
-            file = new RandomAccessFile(new File(pathLocal + nomeArquivoLocal), "rw");
 
             System.out.print(ANSIBuffer.ANSICodes.up(1));
             System.out.print(ANSIBuffer.ANSICodes.right(3));
