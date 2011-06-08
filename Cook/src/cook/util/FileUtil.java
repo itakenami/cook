@@ -116,10 +116,11 @@ public class FileUtil
             }
             zip = new ZipFile(zipFile);
             Enumeration<? extends ZipEntry> e = zip.entries();
+            PrintUtil.outn("");
+            PrintUtil.outn("Starting decompress...");
             while (e.hasMoreElements()) {
                 ZipEntry entrada = (ZipEntry) e.nextElement();
                 arquivo = new File(directory, entrada.getName());
-
                 if (entrada.isDirectory() && !arquivo.exists()) {
                     arquivo.mkdirs();
                     continue;
@@ -185,7 +186,7 @@ public class FileUtil
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             size = connection.getContentLength();
             stream = connection.getInputStream();
-            file = new RandomAccessFile(new File(pathLocal + nomeArquivoLocal), "rw");
+            file = new RandomAccessFile(new File(pathLocal+ "/" + nomeArquivoLocal), "rw");
 
             PrintUtil.outn("");
             PrintUtil.outn("Starting download...");
@@ -220,7 +221,8 @@ public class FileUtil
 
                 flag = parcial;
             }    
-
+            System.out.print(ANSIBuffer.ANSICodes.right(2));
+            System.out.print("100%");
             file.close();
             stream.close();
             PrintUtil.enableASCII();
