@@ -4,21 +4,24 @@ import cook.util.FileUtil;
 import cook.util.PrintUtil;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.TreeMap;
 
-public class Screen
-{
+public class Screen {
 
-    private static String getVersion()
-    {
+    private static String getVersion() {
         return "0.0.3";
     }
 
-    public static void header()
-    {
+    public static void header() {
 
         System.out.println("~");
         System.out.println("~ " + PrintUtil.getYellowFont() + "  ____            _    _                   " + PrintUtil.getColorReset());
@@ -31,8 +34,7 @@ public class Screen
         System.out.println("~ ");
     }
 
-    public static void start()
-    {
+    public static void start() {
         PrintUtil.outn("");
         PrintUtil.outn(PrintUtil.getYellowFont() + "Starting cooking. Wait..." + PrintUtil.getColorReset());
         PrintUtil.outn("");
@@ -40,8 +42,7 @@ public class Screen
         PrintUtil.outn("");
     }
 
-    public static void end()
-    {
+    public static void end() {
         PrintUtil.outn("");
         PrintUtil.outn(PrintUtil.getGreenFont() + "### Baking completed successfully ####################################" + PrintUtil.getColorReset());
         PrintUtil.outn("");
@@ -49,142 +50,133 @@ public class Screen
         PrintUtil.outn("");
     }
 
-    public static void blank()
-    {
+    public static void blank() {
         PrintUtil.outn("Use: cook [plugin] [params]");
         PrintUtil.outn("OR: cook help");
         PrintUtil.outn("");
     }
 
-    public static void help()
-    {
+    public static void help() {
         PrintUtil.outn("Use: cook [plugin] [param]");
         PrintUtil.outn("");
         PrintUtil.outn("Try commands:");
         PrintUtil.outn("~~~~~~~~~~~~~");
-        PrintUtil.outn(" cook help");
-        PrintUtil.outn(" cook list");
-        PrintUtil.outn(" cook remote-list");
-        PrintUtil.outn(" cook install [plugin]");
-        PrintUtil.outn(" cook [plugin] help");
-        PrintUtil.outn(" cook [plugin] version");
+        PrintUtil.outn(" cook help                  Show this screen :)");
+        PrintUtil.outn(" cook list                  List plugins instaled");
+        PrintUtil.outn(" cook list-remote           List plugins available for installation");
+        PrintUtil.outn(" cook install [plugin]      Instal plugin from web repository");
+        PrintUtil.outn(" cook [plugin] help         Show plugin help");
+        PrintUtil.outn(" cook [plugin] version      Show plugin version");
         PrintUtil.outn("");
     }
 
-    public static void list()
-    {
+    public static void list() {
         PrintUtil.outn("Installed plugins:");
         PrintUtil.outn("~~~~~~~~~~~~~~~~~~");
+        try {
+            File folder = new File(FileUtil.getApplicationPath() + "/plugins");
+            File[] listOfFiles = folder.listFiles();
+
+            for (int i = 0; i < listOfFiles.length; i++) {
+                if (listOfFiles[i].isDirectory()) {
+                    Properties props = new Properties();
+                    props.load(new FileInputStream(FileUtil.getApplicationPath() + "/plugins/" + listOfFiles[i].getName() + "/config.properties"));
+                    PrintUtil.outn(" " + listOfFiles[i].getName() + " [v" + props.getProperty("version") + "]");
+                }
+            }
+
+        } catch (Exception ex) {
+            PrintUtil.outn("ERRO!! The plugin folder not found or corrupt.");
+        }
+        PrintUtil.outn("");
+
+    }
+
+    public static void listRemote() {
+        PrintUtil.outn("Plugins available:");
+        PrintUtil.outn("~~~~~~~~~~~~~~~~~~");
+
+        try {
+            Collection<String> pp = getPlugins();
+
+            if (pp.size() > 0) {
+                Iterator<String> it = pp.iterator();
+                while (it.hasNext()) {
+                    String[] info = it.next().split(";");
+                    PrintUtil.outn(info[0] + " [v" + info[2] + "]");
+                    PrintUtil.outn("  " + info[1]);
+                    PrintUtil.outn("");
+                }
+            } else {
+                PrintUtil.outn("There is no available plugins.");
+            }
+        } catch (IOException ioex) {
+            PrintUtil.outn("ERRO!! Remole plugin list is not acessible.");
+        } catch (Exception ex) {
+            PrintUtil.outn("ERRO!! was not possible to list the plugins.");
+        }
+
+        PrintUtil.outn("");
+    }
+
+    public static void install(String op) {
+        
+        PrintUtil.outn("Instaling plugin: "+op+"");
+        PrintUtil.outn("");
+        
+        try {
+            
+            TreeMap<String,String> dados = new TreeMap<String,String>();
+            
+            Collection<String> pp_dispo = getPlugins();
+            for (String info : pp_dispo) {
+                String[] lin = info.split(";");
+                dados.put(lin[0], info);
+            }
+            
+            if (dados.containsKey(op)) {
+                String[] info = dados.get(op).split(";");
+                String arq = FileUtil.download(info[3], FileUtil.getApplicationPath() + "/plugins");
+                FileUtil.extractZip(FileUtil.getApplicationPath() + "/plugins/" + arq, FileUtil.getApplicationPath() + "/plugins");
+                FileUtil.deleteDir(FileUtil.getApplicationPath() + "/plugins/" + arq);
+                PrintUtil.outn("");
+                PrintUtil.outn("Plugin successfully installed.");
+
+            } else {
+                PrintUtil.outn("ERRO!! Plugin is not available.");
+            }
+            PrintUtil.outn("");
+        } catch (IOException ioex) {
+            PrintUtil.outn("ERRO!! Remole plugin list is not acessible.");
+        } catch (Exception ex) {
+            PrintUtil.outn("ERRO!! Not possible install the plugins.");
+            PrintUtil.outn("");
+        }
+    }
+
+    private static Collection<String> getPlugins() throws IOException {
+
+
+        //String plugins[] = FileUtil.openFile(FileUtil.getApplicationPath() + "/plugins.conf").split("\n");
+        String plugins[] = FileUtil.openURL("http://localhost/plugins.conf").split("\n");
+
+
+        TreeMap<String, String> pp = new TreeMap<String, String>();
+        for (int i = 0; i < plugins.length; i++) {
+            pp.put((plugins[i].split(";"))[0], plugins[i]);
+        }
+
+
         File folder = new File(FileUtil.getApplicationPath() + "/plugins");
         File[] listOfFiles = folder.listFiles();
 
         for (int i = 0; i < listOfFiles.length; i++) {
-            if (listOfFiles[i].isDirectory()) {
-                PrintUtil.outn(" " + listOfFiles[i].getName());
+            if (pp.containsKey(listOfFiles[i].getName())) {
+                pp.remove(listOfFiles[i].getName());
             }
         }
 
-        PrintUtil.outn("");
-    }
 
-    public static void remoteList()
-    {
-        PrintUtil.outn("Plugins available:");
-        PrintUtil.outn("~~~~~~~~~~~~~~~~~~");
-        ArrayList<String> pp = new ArrayList<String>();
-        try {
-            pp = getPlugins();
-        } catch (IOException ex) {
-            PrintUtil.outn(PrintUtil.ERRO, ex.getMessage());
-        }
-        if(pp.size() > 0){
-            for (int i = 0; i < pp.size(); i++) {
-                PrintUtil.outn(pp.get(i));
-            }
-        }else{
-            PrintUtil.outn("There is no available plugins.");
-        }
-
-        PrintUtil.outn("");
-    }
-
-    public static void install(String op)
-    {
-        String url = null;
-        ArrayList<String> pp_dispo = new ArrayList<String>();
-        try {
-            pp_dispo = getPlugins();
-            if (pp_dispo.contains(op)) {
-                BufferedReader f = new BufferedReader(new FileReader(FileUtil.getApplicationPath() + "/plugins.conf"));
-                String linha;
-                String texto = "";
-                while ((linha = f.readLine()) != null) {
-                    texto += linha + "\n";
-                }
-                String plugins[] = texto.split("\n");
-                String nomePlugin[];
-                for (int i = 0; i < plugins.length; i++) {
-                    nomePlugin = plugins[i].split(";");
-                    if (nomePlugin[0].equals(op)) {
-                        url = nomePlugin[2];
-                    }
-                }
-                try {
-                    String arq = FileUtil.download(url, FileUtil.getApplicationPath() + "/plugins");
-                    FileUtil.extractZip(FileUtil.getApplicationPath() + "/plugins/"+arq, FileUtil.getApplicationPath() + "/plugins");
-                    PrintUtil.outn("");
-                    PrintUtil.outn(PrintUtil.getGreenFont() + "Plugin successfully installed." + PrintUtil.getColorReset());
-                } catch (FileNotFoundException ex) {
-                    PrintUtil.outn(PrintUtil.ERRO, ex.getMessage());
-                } catch (IOException ex) {
-                    PrintUtil.outn(PrintUtil.ERRO, ex.getMessage());
-                } catch (Exception ex) {
-                    PrintUtil.outn(PrintUtil.ERRO, ex.getMessage());
-                }
-            } else {
-                PrintUtil.outn(PrintUtil.ERRO, PrintUtil.getRedFont()+"Plugin is not available."+PrintUtil.getColorReset());
-            }
-        } catch (IOException ex) {
-            PrintUtil.outn(PrintUtil.ERRO, ex.getMessage());
-        }
-    }
-
-    private static ArrayList<String> getPlugins() throws IOException
-    {
-        ArrayList<String> pp_disponiveis = new ArrayList<String>();
-        ArrayList<String> pp_add = new ArrayList<String>();
-        try {
-            BufferedReader f = new BufferedReader(new FileReader(FileUtil.getApplicationPath() + "/plugins.conf"));
-            String linha;
-            String texto = "";
-            while ((linha = f.readLine()) != null) {
-                texto += linha + "\n";
-            }
-            String plugins[] = texto.split("\n");
-            String nomePlugin[];
-            ArrayList<String> pp = new ArrayList<String>();
-            for (int i = 0; i < plugins.length; i++) {
-                nomePlugin = plugins[i].split(";");
-                pp.add(nomePlugin[0]);
-            }
-            File folder = new File(FileUtil.getApplicationPath() + "/plugins");
-            File[] listOfFiles = folder.listFiles();
-            for (int i = 0; i < pp.size(); i++) {
-                for (int j = 0; j < listOfFiles.length; j++) {
-                    if (listOfFiles[j].getName().equals(pp.get(i))) {
-                        pp_add.add(listOfFiles[j].getName());
-                    }
-                }
-            }
-
-            for (int i = 0; i < pp.size(); i++) {
-                if (!pp_add.contains(pp.get(i))) {
-                    pp_disponiveis.add(pp.get(i));
-                }
-            }
-        } catch (IOException ex) {
-            throw new IOException(ex.getMessage());
-        }
-        return pp_disponiveis;
+        return pp.values();
     }
 }

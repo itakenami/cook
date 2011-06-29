@@ -51,9 +51,9 @@ public class Cook {
                 return false;
             }
 
-            if("remote-list".equals(args[0]))
+            if("list-remote".equals(args[0]))
             {
-                Screen.remoteList();
+                Screen.listRemote();
                 return false;
             }
 

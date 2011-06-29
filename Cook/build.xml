@@ -95,5 +95,7 @@
             <fileset dir="${dist.jar.dir}"></fileset>  
         </copy>
         
+        <chmod file="../bin/cook" perm="777"/>
+        
     </target>
 </project>

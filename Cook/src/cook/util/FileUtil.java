@@ -1,10 +1,12 @@
 package cook.util;
 
 import cook.Main;
+import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
@@ -12,30 +14,25 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import jline.ANSIBuffer;
 
-
-public class FileUtil
-{
+public class FileUtil {
 
     private static final int TAMANHO_BUFFER = 2048;
     private static final int MAX_BUFFER_SIZE = 1024;
-
     private static final int DOWNLOADING = 0;
-
     private static int size;
     private static int downloaded;
     private static int status;
 
-
-
-    private static String findJarParentPath(File jarFile)
-    {
+    private static String findJarParentPath(File jarFile) {
         while (jarFile.getPath().contains(".jar")) {
             jarFile = jarFile.getParentFile();
         }
@@ -43,13 +40,11 @@ public class FileUtil
         return jarFile.getPath().substring(5);
     }
 
-    public static String getPromptPath()
-    {
+    public static String getPromptPath() {
         return System.getProperty("user.dir");
     }
 
-    public static String getApplicationPath()
-    {
+    public static String getApplicationPath() {
         String url = Main.class.getResource(Main.class.getSimpleName() + ".class").getPath();
         File dir = new File(url).getParentFile();
         String path = null;
@@ -67,8 +62,7 @@ public class FileUtil
         }
     }
 
-    public static void saveToPath(String file, String body, boolean append)
-    {
+    public static void saveToPath(String file, String body, boolean append) {
         FileWriter x = null;
         try {
             x = new FileWriter(file, append);
@@ -83,23 +77,23 @@ public class FileUtil
         }
     }
 
-    public static void saveToPath(String file, String body)
-    {
+    public static void saveToPath(String file, String body) {
         saveToPath(file, body, false);
     }
 
-    public static boolean fileExist(String path)
-    {
+    public static boolean fileExist(String path) {
         return (new File(path)).exists();
     }
 
-    public static boolean createDir(String dir)
-    {
+    public static boolean createDir(String dir) {
         return (new File(dir)).mkdir();
     }
+    
+    public static boolean deleteDir(String dir) {
+        return (new File(dir)).delete();
+    }
 
-    public static boolean extractZip(String fileZip, String path) throws ZipException, IOException, Exception
-    {
+    public static boolean extractZip(String fileZip, String path) throws ZipException, IOException, Exception {
         File zipFile = new File(fileZip);
         File directory = new File(path);
         ZipFile zip = null;
@@ -139,8 +133,7 @@ public class FileUtil
                     while ((bytesLidos = is.read(buffer)) > 0) {
                         os.write(buffer, 0, bytesLidos);
                     }
-                }catch (IOException ex){
-
+                } catch (IOException ex) {
                 } finally {
                     if (is != null) {
                         try {
@@ -158,7 +151,7 @@ public class FileUtil
                     }
                 }
             }
-        }catch (ZipException zp){
+        } catch (ZipException zp) {
             throw new ZipException("Error opening file zip.");
         } finally {
             if (zip != null) {
@@ -172,8 +165,7 @@ public class FileUtil
         return true;
     }
 
-    public static String download(String stringUrl, String pathLocal) throws FileNotFoundException, IOException
-    {
+    public static String download(String stringUrl, String pathLocal) throws FileNotFoundException, IOException {
         int flag = 0;
         InputStream stream = null;
         String arquivo;
@@ -187,13 +179,11 @@ public class FileUtil
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             size = connection.getContentLength();
             stream = connection.getInputStream();
-            file = new RandomAccessFile(new File(pathLocal+ "/" + nomeArquivoLocal), "rw");
+            file = new RandomAccessFile(new File(pathLocal + "/" + nomeArquivoLocal), "rw");
 
-            PrintUtil.outn("");
             PrintUtil.outn("Starting download...");
             PrintUtil.outn("");
-            PrintUtil.outn("File: "+nomeArquivoLocal);
-            PrintUtil.outn("");
+            PrintUtil.outn("File: " + nomeArquivoLocal);
             System.out.print("~ [");
             System.out.print(ANSIBuffer.ANSICodes.right(50));
             System.out.println("]");
@@ -216,12 +206,14 @@ public class FileUtil
                 }
                 file.write(buffer, 0, read);
                 downloaded += read;
-                int parcial = downloaded*50/size;
+                int parcial = downloaded * 50 / size;
 
-                printPercent(parcial - flag);
+                for (int j = 0, i = parcial - flag; j < i; j++) {
+                    System.out.print(">");
+                }
 
                 flag = parcial;
-            }    
+            }
             System.out.print(ANSIBuffer.ANSICodes.right(2));
             System.out.print("100%");
             file.close();
@@ -229,18 +221,34 @@ public class FileUtil
             PrintUtil.enableASCII();
             System.out.println("");
 
-        }catch (FileNotFoundException ex){
+        } catch (FileNotFoundException ex) {
             throw new FileNotFoundException("File not found.");
-        }catch (IOException ex){
+        } catch (IOException ex) {
             throw new IOException("Error connecting to server.");
         }
         return nomeArquivoLocal;
     }
 
-    private static void printPercent(int i)
-    {
-        for (int j = 0; j < i; j++) {
-            System.out.print(">");
+    public static String openFile(String file) throws FileNotFoundException, IOException {
+        BufferedReader f = new BufferedReader(new FileReader(file));
+        StringBuilder sb = new StringBuilder();
+        String linha;
+        while ((linha = f.readLine()) != null) {
+            sb.append(linha).append("\n");
         }
+        return sb.toString();
     }
+    
+    public static String openURL(String fileurl) throws MalformedURLException, IOException   {
+        
+        BufferedReader f = new BufferedReader(new InputStreamReader((new URL(fileurl)).openStream()));  
+        StringBuilder sb = new StringBuilder();
+        String linha;
+        while ((linha = f.readLine()) != null) {
+            sb.append(linha).append("\n");
+        }
+        return sb.toString();
+    }
+    
+    
 }
