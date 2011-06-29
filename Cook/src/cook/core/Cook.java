@@ -51,6 +51,21 @@ public class Cook {
                 return false;
             }
 
+            if("remote-list".equals(args[0]))
+            {
+                Screen.remoteList();
+                return false;
+            }
+
+            if("install".equals(args[0])){
+                if(args.length > 1){
+                    Screen.install(args[1]);
+                    return false;
+                }
+                PrintUtil.outn(PrintUtil.ERRO,PrintUtil.getRedFont()+"Plugin is not available"+PrintUtil.getColorReset());
+                PrintUtil.outn("");
+                return false;
+            }
 
             //Obtem o plugin que será utilizado
             PLUGIN = args[0];

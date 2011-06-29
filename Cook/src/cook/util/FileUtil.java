@@ -172,17 +172,18 @@ public class FileUtil
         return true;
     }
 
-    public static Boolean download(String stringUrl, String pathLocal) throws FileNotFoundException, IOException
+    public static String download(String stringUrl, String pathLocal) throws FileNotFoundException, IOException
     {
         int flag = 0;
         InputStream stream = null;
+        String arquivo;
+        String nomeArquivoLocal;
         try {
             status = 0;
             RandomAccessFile file = null;
             URL url = new URL(stringUrl);
-            String arquivo = url.getFile();
-            String nomeArquivoLocal = arquivo.substring(arquivo.lastIndexOf('/') + 1);
-
+            arquivo = url.getFile();
+            nomeArquivoLocal = arquivo.substring(arquivo.lastIndexOf('/') + 1);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             size = connection.getContentLength();
             stream = connection.getInputStream();
@@ -229,11 +230,11 @@ public class FileUtil
             System.out.println("");
 
         }catch (FileNotFoundException ex){
-            throw new FileNotFoundException("File not found !");
+            throw new FileNotFoundException("File not found.");
         }catch (IOException ex){
-            throw new IOException();
+            throw new IOException("Error connecting to server.");
         }
-        return true;
+        return nomeArquivoLocal;
     }
 
     private static void printPercent(int i)
