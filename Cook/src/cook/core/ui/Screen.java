@@ -158,7 +158,7 @@ public class Screen {
 
 
         //String plugins[] = FileUtil.openFile(FileUtil.getApplicationPath() + "/plugins.conf").split("\n");
-        String plugins[] = FileUtil.openURL("http://localhost/plugins.conf").split("\n");
+        String plugins[] = FileUtil.openURL("https://github.com/itakenami/cook/raw/master/plugins.conf").split("\n");
 
 
         TreeMap<String, String> pp = new TreeMap<String, String>();
