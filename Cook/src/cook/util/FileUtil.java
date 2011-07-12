@@ -13,6 +13,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -21,6 +22,7 @@ import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Properties;
 import jline.ANSIBuffer;
 
 public class FileUtil {
@@ -88,9 +90,47 @@ public class FileUtil {
     public static boolean createDir(String dir) {
         return (new File(dir)).mkdir();
     }
-    
-    public static boolean deleteDir(String dir) {
-        return (new File(dir)).delete();
+
+    public static void deleteDir(String dir) {
+        delete(new File(dir));
+    }
+
+    private static void delete(File file) {
+
+        // não é null  
+        if (file != null) {
+
+            // e é um diretório  
+            if (file.isDirectory()) {
+
+                // itera por todos os arquivos do diretório  
+                for (File f : file.listFiles()) {
+
+                    // o arquivo atual é um diretório?  
+                    if (f.isDirectory()) {
+                        // invoca delete para apagar os arquivos de dentro  
+                        // deste diretório  
+                        delete(f);
+                    } else {
+                        // apaga o arquivo  
+                        f.delete();
+                    }
+
+                }
+
+            }
+
+            // apaga o arquivo (pode ser um diretório ou não)  
+            file.delete();
+
+        }
+
+    }
+
+    public static String getPropetry(String file, String key) throws IOException {
+        Properties props = new Properties();
+        props.load(new FileInputStream(file));
+        return props.getProperty(key);
     }
 
     public static boolean extractZip(String fileZip, String path) throws ZipException, IOException, Exception {
@@ -238,10 +278,10 @@ public class FileUtil {
         }
         return sb.toString();
     }
-    
-    public static String openURL(String fileurl) throws MalformedURLException, IOException   {
-        
-        BufferedReader f = new BufferedReader(new InputStreamReader((new URL(fileurl)).openStream()));  
+
+    public static String openURL(String fileurl) throws MalformedURLException, IOException {
+
+        BufferedReader f = new BufferedReader(new InputStreamReader((new URL(fileurl)).openStream()));
         StringBuilder sb = new StringBuilder();
         String linha;
         while ((linha = f.readLine()) != null) {
@@ -249,6 +289,4 @@ public class FileUtil {
         }
         return sb.toString();
     }
-    
-    
 }

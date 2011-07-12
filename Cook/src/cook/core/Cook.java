@@ -35,6 +35,11 @@ public class Cook {
             return false;
 
         } else {
+            
+            if ("test".equals(args[0])) {
+                PrintUtil.outn("Test OUT: " + System.getProperty("os.arch"));
+                return false;
+            }
 
             if ("help".equals(args[0])) {
                 Screen.help();
@@ -46,24 +51,38 @@ public class Cook {
                 return false;
             }
 
-            if ("teste".equals(args[0])) {
-                PrintUtil.outn("SAIDA:" + System.getProperty("os.arch"));
-                return false;
-            }
-
-            if("list-remote".equals(args[0]))
-            {
+            if ("list-remote".equals(args[0])) {
                 Screen.listRemote();
                 return false;
             }
 
-            if("install".equals(args[0])){
-                if(args.length > 1){
+            if ("install".equals(args[0])) {
+                if (args.length > 1) {
                     Screen.install(args[1]);
                     return false;
                 }
-                PrintUtil.outn(PrintUtil.ERRO,PrintUtil.getRedFont()+"Plugin is not available"+PrintUtil.getColorReset());
+                PrintUtil.outn(PrintUtil.ERRO, PrintUtil.getRedFont() + "Plugin is not available" + PrintUtil.getColorReset());
                 PrintUtil.outn("");
+                return false;
+            }
+            
+            if ("uninstall".equals(args[0])) {
+                if (args.length > 1) {
+                    Screen.uninstall(args[1]);
+                    return false;
+                }
+                PrintUtil.outn(PrintUtil.ERRO, PrintUtil.getRedFont() + "Plugin is not available" + PrintUtil.getColorReset());
+                PrintUtil.outn("");
+                return false;
+            }
+            
+            if ("update".equals(args[0])) {
+                //Implementar
+                if (args.length > 1) {
+                    Screen.uninstall(args[1]);
+                    Screen.install(args[1]);
+                    return false;
+                }
                 return false;
             }
 
@@ -75,7 +94,7 @@ public class Cook {
 
             if (!(new File(PATH)).exists()) {
 
-                PrintUtil.outn(PrintUtil.getRedFont()+"Plugin does not exist!!! Try a valid plugin."+PrintUtil.getColorReset());
+                PrintUtil.outn(PrintUtil.getRedFont() + "Plugin does not exist!!! Try a valid plugin." + PrintUtil.getColorReset());
                 PrintUtil.outn("");
                 Screen.blank();
 
@@ -102,24 +121,24 @@ public class Cook {
         String TEMPLATE_DIR = null;
 
         //Carrega o arquivos de propriedades do plugin
-        PrintUtil.out(PrintUtil.getYellowFont()+"Loading the property file of the plugin " + PLUGIN + ": "+PrintUtil.getColorReset());
+        PrintUtil.out(PrintUtil.getYellowFont() + "Loading the property file of the plugin " + PLUGIN + ": " + PrintUtil.getColorReset());
         try {
             Properties props = new Properties();
             props.load(new FileInputStream(PATH + "/config.properties"));
 
             if (props.getProperty("main") == null) {
-                
+
                 PrintUtil.redFont();
-                PrintUtil.outn(PrintUtil.ERRO,"\"main\" property not found.");
+                PrintUtil.outn(PrintUtil.ERRO, "\"main\" property not found.");
                 PrintUtil.colorReset();
                 PrintUtil.outn("");
                 return;
             }
 
             if (props.getProperty("templates") == null) {
-                
+
                 PrintUtil.redFont();
-                PrintUtil.outn(PrintUtil.ERRO,"\"templates\" property not found.");
+                PrintUtil.outn(PrintUtil.ERRO, "\"templates\" property not found.");
                 PrintUtil.colorReset();
                 PrintUtil.outn("");
                 return;
@@ -130,27 +149,27 @@ public class Cook {
             TEMPLATE_DIR = props.getProperty("templates");
 
             PrintUtil.greenFont();
-            PrintUtil.outn(PrintUtil.MSG,"[OK]");
+            PrintUtil.outn(PrintUtil.MSG, "[OK]");
             PrintUtil.colorReset();
-            
+
         } catch (FileNotFoundException e1) {
-            
+
             PrintUtil.redFont();
-            PrintUtil.outn(PrintUtil.ERRO,"Property file not found.");
+            PrintUtil.outn(PrintUtil.ERRO, "Property file not found.");
             PrintUtil.colorReset();
             PrintUtil.outn("");
             return;
         } catch (Exception e2) {
-            
+
             PrintUtil.redFont();
-            PrintUtil.outn(PrintUtil.ERRO,e2.getMessage());
+            PrintUtil.outn(PrintUtil.ERRO, e2.getMessage());
             PrintUtil.colorReset();
             PrintUtil.outn("");
             return;
 
         }
 
-        PrintUtil.out(PrintUtil.getYellowFont()+"Loading the plugin libraries: "+PrintUtil.getColorReset());
+        PrintUtil.out(PrintUtil.getYellowFont() + "Loading the plugin libraries: " + PrintUtil.getColorReset());
         try {
             //Define o PATH das lib's do plugin que será utilizado
             final String LIB_PATH = PATH + "/lib";
@@ -159,20 +178,20 @@ public class Cook {
             Classpath.loadJars(LIB_PATH);
 
             PrintUtil.greenFont();
-            PrintUtil.out(PrintUtil.MSG,"[OK]");
+            PrintUtil.out(PrintUtil.MSG, "[OK]");
             PrintUtil.colorReset();
-            
-        }catch (NullPointerException e1){
-            
+
+        } catch (NullPointerException e1) {
+
             PrintUtil.redFont();
-            PrintUtil.outn(PrintUtil.ERRO,"lib folder not found.");
+            PrintUtil.outn(PrintUtil.ERRO, "lib folder not found.");
             PrintUtil.colorReset();
             PrintUtil.outn("");
             return;
         } catch (Exception e2) {
-            
+
             PrintUtil.redFont();
-            PrintUtil.outn(PrintUtil.ERRO,e2.getMessage());
+            PrintUtil.outn(PrintUtil.ERRO, e2.getMessage());
             PrintUtil.colorReset();
             PrintUtil.outn("");
             return;
@@ -181,33 +200,33 @@ public class Cook {
 
 
         //Cria o objetos do plugin que será utilizado
-        PrintUtil.out(PrintUtil.getYellowFont()+"Instantiating plugin: "+PrintUtil.getColorReset());
+        PrintUtil.out(PrintUtil.getYellowFont() + "Instantiating plugin: " + PrintUtil.getColorReset());
         try {
             cook = (IFCook) Class.forName(MAIN_CLASS).newInstance();
-            
+
             PrintUtil.greenFont();
-            PrintUtil.out(PrintUtil.MSG,"[OK]");
+            PrintUtil.out(PrintUtil.MSG, "[OK]");
             PrintUtil.colorReset();
-            
+
         } catch (ClassNotFoundException e1) {
-            
+
             PrintUtil.redFont();
-            PrintUtil.outn(PrintUtil.ERRO,"Class of plugin not found.");
+            PrintUtil.outn(PrintUtil.ERRO, "Class of plugin not found.");
             PrintUtil.colorReset();
             PrintUtil.outn("");
             return;
         } catch (Exception e2) {
-            
+
             PrintUtil.redFont();
-            PrintUtil.outn(PrintUtil.ERRO,e2.getMessage());
+            PrintUtil.outn(PrintUtil.ERRO, e2.getMessage());
             PrintUtil.colorReset();
             PrintUtil.outn("");
             return;
         }
 
         if (args.length > 1) {
-            
-            
+
+
             if (args[1].equals("help")) {
                 Screen.start();
                 cook.printHeader();
@@ -225,7 +244,7 @@ public class Cook {
                 Screen.end();
                 return;
             }
-            
+
 
         }
 
@@ -239,11 +258,11 @@ public class Cook {
 
         if (!cook.start(args)) {
             PrintUtil.outn("");
-            PrintUtil.outn(PrintUtil.getRedFont()+"--- ERRO ----------------------------------------------------------"+PrintUtil.getColorReset());
+            PrintUtil.outn(PrintUtil.getRedFont() + "--- ERRO ----------------------------------------------------------" + PrintUtil.getColorReset());
             PrintUtil.outn("The plugin is not started correctly.");
-            PrintUtil.outn(PrintUtil.getRedFont()+"-------------------------------------------------------------------"+PrintUtil.getColorReset());
+            PrintUtil.outn(PrintUtil.getRedFont() + "-------------------------------------------------------------------" + PrintUtil.getColorReset());
             PrintUtil.outn("");
-            PrintUtil.outn(PrintUtil.getRedFont()+"Ho no!!! The plugin did not run correctly. Try again."+PrintUtil.getColorReset());
+            PrintUtil.outn(PrintUtil.getRedFont() + "Ho no!!! The plugin did not run correctly. Try again." + PrintUtil.getColorReset());
             PrintUtil.outn("");
             return;
         }
@@ -267,11 +286,11 @@ public class Cook {
             } else {
 
                 PrintUtil.outn("");
-                PrintUtil.outn(PrintUtil.getRedFont()+"--- ERRO ----------------------------------------------------------"+PrintUtil.getColorReset());
+                PrintUtil.outn(PrintUtil.getRedFont() + "--- ERRO ----------------------------------------------------------" + PrintUtil.getColorReset());
                 PrintUtil.outn("" + out.getMESSAGE());
-                PrintUtil.outn(PrintUtil.getRedFont()+"-------------------------------------------------------------------"+PrintUtil.getColorReset());
+                PrintUtil.outn(PrintUtil.getRedFont() + "-------------------------------------------------------------------" + PrintUtil.getColorReset());
                 PrintUtil.outn("");
-                PrintUtil.outn(PrintUtil.getRedFont()+"Ho no!!! The plugin did not run correctly. Try again."+PrintUtil.getColorReset());
+                PrintUtil.outn(PrintUtil.getRedFont() + "Ho no!!! The plugin did not run correctly. Try again." + PrintUtil.getColorReset());
                 PrintUtil.outn("");
                 return;
             }
@@ -279,11 +298,11 @@ public class Cook {
         } else {
 
             PrintUtil.outn("");
-            PrintUtil.outn(PrintUtil.getRedFont()+"--- ERRO ----------------------------------------------------------"+PrintUtil.getColorReset());
+            PrintUtil.outn(PrintUtil.getRedFont() + "--- ERRO ----------------------------------------------------------" + PrintUtil.getColorReset());
             PrintUtil.outn("You're in bad directory to run this plugin.");
-            PrintUtil.outn(PrintUtil.getRedFont()+"-------------------------------------------------------------------"+PrintUtil.getColorReset());
+            PrintUtil.outn(PrintUtil.getRedFont() + "-------------------------------------------------------------------" + PrintUtil.getColorReset());
             PrintUtil.outn("");
-            PrintUtil.outn(PrintUtil.getRedFont()+"Ho no!!! The plugin did not run correctly. Try again."+PrintUtil.getColorReset());
+            PrintUtil.outn(PrintUtil.getRedFont() + "Ho no!!! The plugin did not run correctly. Try again." + PrintUtil.getColorReset());
             PrintUtil.outn("");
             return;
         }

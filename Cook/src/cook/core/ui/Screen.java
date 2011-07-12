@@ -65,6 +65,8 @@ public class Screen {
         PrintUtil.outn(" cook list                  List plugins instaled");
         PrintUtil.outn(" cook list-remote           List plugins available for installation");
         PrintUtil.outn(" cook install [plugin]      Instal plugin from web repository");
+        PrintUtil.outn(" cook update [plugin]       Update plugin from web repository");
+        PrintUtil.outn(" cook uninstall [plugin]    Uninstall plugin from computer");
         PrintUtil.outn(" cook [plugin] help         Show plugin help");
         PrintUtil.outn(" cook [plugin] version      Show plugin version");
         PrintUtil.outn("");
@@ -79,9 +81,8 @@ public class Screen {
 
             for (int i = 0; i < listOfFiles.length; i++) {
                 if (listOfFiles[i].isDirectory()) {
-                    Properties props = new Properties();
-                    props.load(new FileInputStream(FileUtil.getApplicationPath() + "/plugins/" + listOfFiles[i].getName() + "/config.properties"));
-                    PrintUtil.outn(" " + listOfFiles[i].getName() + " [v" + props.getProperty("version") + "]");
+                    String version = FileUtil.getPropetry(FileUtil.getApplicationPath() + "/plugins/" + listOfFiles[i].getName() + "/config.properties", "version");
+                    PrintUtil.outn(" " + listOfFiles[i].getName() + " [v" + version + "]");
                 }
             }
 
@@ -103,7 +104,13 @@ public class Screen {
                 Iterator<String> it = pp.iterator();
                 while (it.hasNext()) {
                     String[] info = it.next().split(";");
-                    PrintUtil.outn(info[0] + " [v" + info[2] + "]");
+                    
+                    if(info.length > 4){
+                        PrintUtil.outn(info[0] + " [ v" + info[2] + " => to update ]");
+                    }else{
+                        PrintUtil.outn(info[0] + " [ v" + info[2] + " => to install ]");
+                    }
+                    
                     PrintUtil.outn("  " + info[1]);
                     PrintUtil.outn("");
                 }
@@ -148,6 +155,7 @@ public class Screen {
             PrintUtil.outn("");
         } catch (IOException ioex) {
             PrintUtil.outn("ERRO!! Remole plugin list is not acessible.");
+            PrintUtil.outn("");
         } catch (Exception ex) {
             PrintUtil.outn("ERRO!! Not possible install the plugins.");
             PrintUtil.outn("");
@@ -157,8 +165,8 @@ public class Screen {
     private static Collection<String> getPlugins() throws IOException {
 
 
-        //String plugins[] = FileUtil.openFile(FileUtil.getApplicationPath() + "/plugins.conf").split("\n");
-        String plugins[] = FileUtil.openURL("https://github.com/itakenami/cook/raw/master/plugins.conf").split("\n");
+        String plugins[] = FileUtil.openURL("http://localhost/cook/plugins.conf").split("\n");
+        //String plugins[] = FileUtil.openURL("https://github.com/itakenami/cook/raw/master/plugins.conf").split("\n");
 
 
         TreeMap<String, String> pp = new TreeMap<String, String>();
@@ -172,11 +180,39 @@ public class Screen {
 
         for (int i = 0; i < listOfFiles.length; i++) {
             if (pp.containsKey(listOfFiles[i].getName())) {
-                pp.remove(listOfFiles[i].getName());
+                
+                String info_remote = pp.get(listOfFiles[i].getName());
+                String ver_remote = (info_remote.split(";"))[2];
+                String ver_local = FileUtil.getPropetry(FileUtil.getApplicationPath() + "/plugins/" + listOfFiles[i].getName() + "/config.properties", "version");
+                
+                if(ver_local.equals(ver_remote)){
+                    pp.remove(listOfFiles[i].getName());
+                }else{
+                    pp.put(listOfFiles[i].getName(), info_remote+";A");
+                }
+                
             }
         }
 
 
         return pp.values();
+    }
+    
+    public static void uninstall(String plugin){
+        
+        try{
+            if(FileUtil.fileExist(FileUtil.getApplicationPath() + "/plugins/" + plugin)){
+                FileUtil.deleteDir(FileUtil.getApplicationPath() + "/plugins/" + plugin);
+                PrintUtil.outn("Plugin successfully uninstalled.");
+                PrintUtil.outn("");
+            }else{
+                PrintUtil.outn("ERRO!! Plugin is not available.");
+                PrintUtil.outn("");
+            }
+        }catch(Exception ex){
+            PrintUtil.outn("ERRO!! Not possible uninstall the plugins.");
+            PrintUtil.outn("");
+        }
+        
     }
 }
