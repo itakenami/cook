@@ -165,8 +165,8 @@ public class Screen {
     private static Collection<String> getPlugins() throws IOException {
 
 
-        String plugins[] = FileUtil.openURL("http://localhost/cook/plugins.conf").split("\n");
-        //String plugins[] = FileUtil.openURL("https://github.com/itakenami/cook/raw/master/plugins.conf").split("\n");
+        //String plugins[] = FileUtil.openURL("http://localhost/cook/plugins.conf").split("\n");
+        String plugins[] = FileUtil.openURL("https://github.com/itakenami/cook/raw/master/plugins.conf").split("\n");
 
 
         TreeMap<String, String> pp = new TreeMap<String, String>();
