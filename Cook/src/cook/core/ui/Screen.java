@@ -18,7 +18,7 @@ import java.util.TreeMap;
 public class Screen {
 
     private static String getVersion() {
-        return "0.0.3";
+        return "0.0.4";
     }
 
     public static void header() {
